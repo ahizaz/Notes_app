@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../controllers/auth_controller.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_theme.dart';
+import '../widgets/app_loading_button.dart';
+import '../widgets/app_text_form_field.dart';
+import '../widgets/auth_header.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,39 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header
-                Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.note_alt_rounded,
-                        size: 50,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    const Text(
-                      'Welcome Back',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    const Text(
-                      'Sign in to your account',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
+                const AuthHeader(
+                  title: 'Welcome Back',
+                  subtitle: 'Sign in to your account',
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
@@ -116,78 +89,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       // Email Field
-                      TextFormField(
+                      AppTextFormField(
                         controller: _emailController,
+                        hintText: 'Email',
+                        prefixIcon: const Icon(Icons.email_outlined),
                         keyboardType: TextInputType.emailAddress,
                         validator: AppValidations.validateEmail,
-                        decoration: InputDecoration(
-                          hintText: 'Email',
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Colors.transparent),
-                          ),
-                        ),
+                        fillColor: Colors.white,
+                        borderRadius: 8,
+                        borderColor: Colors.transparent,
+                        enabledBorderColor: Colors.transparent,
                       ),
                       const SizedBox(height: AppSpacing.md),
 
                       // Password Field
-                      TextFormField(
+                      AppTextFormField(
                         controller: _passwordController,
+                        hintText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outlined),
                         obscureText: true,
                         validator: AppValidations.validatePassword,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          prefixIcon: const Icon(Icons.lock_outlined),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Colors.transparent),
-                          ),
-                        ),
+                        fillColor: Colors.white,
+                        borderRadius: 8,
+                        borderColor: Colors.transparent,
+                        enabledBorderColor: Colors.transparent,
                       ),
                       const SizedBox(height: AppSpacing.lg),
 
                       // Login Button
                       Obx(
-                        () => ElevatedButton(
-                          onPressed: authController.isLoading.value
-                              ? null
-                              : _handleLogin,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.accent,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: AppSpacing.md,
-                            ),
-                          ),
-                          child: authController.isLoading.value
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(
-                                            Colors.white),
-                                  ),
-                                )
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                        () => AppLoadingButton(
+                          label: 'Login',
+                          isLoading: authController.isLoading.value,
+                          onPressed:
+                              authController.isLoading.value ? null : _handleLogin,
+                          backgroundColor: AppColors.accent,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),

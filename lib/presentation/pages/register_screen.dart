@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../controllers/auth_controller.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_theme.dart';
+import '../widgets/app_loading_button.dart';
+import '../widgets/app_text_form_field.dart';
+import '../widgets/auth_header.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -80,39 +83,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 40),
 
                 // Header
-                Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.note_alt_rounded,
-                        size: 50,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    const Text(
-                      'Create Account',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    const Text(
-                      'Sign up to get started',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
+                const AuthHeader(
+                  title: 'Create Account',
+                  subtitle: 'Sign up to get started',
+                  topSpacing: 40,
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
@@ -122,46 +96,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     children: [
                       // Name Field
-                      TextFormField(
+                      AppTextFormField(
                         controller: _nameController,
+                        hintText: 'Full Name',
+                        prefixIcon: const Icon(Icons.person_outlined),
                         validator: AppValidations.validateName,
-                        decoration: InputDecoration(
-                          hintText: 'Full Name',
-                          prefixIcon: const Icon(Icons.person_outlined),
-                          fillColor: Colors.white,
-                        ),
+                        fillColor: Colors.white,
+                        borderRadius: 8,
+                        borderColor: Colors.transparent,
+                        enabledBorderColor: Colors.transparent,
                       ),
                       const SizedBox(height: AppSpacing.md),
 
                       // Email Field
-                      TextFormField(
+                      AppTextFormField(
                         controller: _emailController,
+                        hintText: 'Email',
+                        prefixIcon: const Icon(Icons.email_outlined),
                         keyboardType: TextInputType.emailAddress,
                         validator: AppValidations.validateEmail,
-                        decoration: InputDecoration(
-                          hintText: 'Email',
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          fillColor: Colors.white,
-                        ),
+                        fillColor: Colors.white,
+                        borderRadius: 8,
+                        borderColor: Colors.transparent,
+                        enabledBorderColor: Colors.transparent,
                       ),
                       const SizedBox(height: AppSpacing.md),
 
                       // Password Field
-                      TextFormField(
+                      AppTextFormField(
                         controller: _passwordController,
+                        hintText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outlined),
                         obscureText: true,
                         validator: AppValidations.validatePassword,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          prefixIcon: const Icon(Icons.lock_outlined),
-                          fillColor: Colors.white,
-                        ),
+                        fillColor: Colors.white,
+                        borderRadius: 8,
+                        borderColor: Colors.transparent,
+                        enabledBorderColor: Colors.transparent,
                       ),
                       const SizedBox(height: AppSpacing.md),
 
                       // Confirm Password Field
-                      TextFormField(
+                      AppTextFormField(
                         controller: _confirmPasswordController,
+                        hintText: 'Confirm Password',
+                        prefixIcon: const Icon(Icons.lock_outlined),
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -172,45 +151,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                           return null;
                         },
-                        decoration: InputDecoration(
-                          hintText: 'Confirm Password',
-                          prefixIcon: const Icon(Icons.lock_outlined),
-                          fillColor: Colors.white,
-                        ),
+                        fillColor: Colors.white,
+                        borderRadius: 8,
+                        borderColor: Colors.transparent,
+                        enabledBorderColor: Colors.transparent,
                       ),
                       const SizedBox(height: AppSpacing.lg),
 
                       // Register Button
                       Obx(
-                        () => ElevatedButton(
+                        () => AppLoadingButton(
+                          label: 'Register',
+                          isLoading: authController.isLoading.value,
                           onPressed: authController.isLoading.value
                               ? null
                               : _handleRegister,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.accent,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: AppSpacing.md,
-                            ),
-                          ),
-                          child: authController.isLoading.value
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(
-                                            Colors.white),
-                                  ),
-                                )
-                              : const Text(
-                                  'Register',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          backgroundColor: AppColors.accent,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),

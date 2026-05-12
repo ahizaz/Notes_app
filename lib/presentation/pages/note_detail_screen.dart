@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../controllers/note_controller.dart';
 import '../../data/models/note_model.dart';
 import '../../utils/app_theme.dart';
+import '../widgets/app_confirm_dialog.dart';
 
 class NoteDetailScreen extends StatefulWidget {
   final NoteModel note;
@@ -24,58 +25,54 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
     noteController = Get.find<NoteController>();
   }
 
+  Future<void> _handleEditNote() async {
+    context.pushNamed('edit-note', extra: widget.note);
+  }
+
+  Future<void> _handleDeleteNote() async {
+    final confirmed = await showAppConfirmDialog(
+      context: context,
+      title: 'Delete Note',
+      content: 'Are you sure you want to delete this note?',
+      confirmText: 'Delete',
+    );
+
+    if (confirmed == true) {
+      final success = await noteController.deleteNote(widget.note.id);
+      if (success && mounted) {
+        context.pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Note deleted'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      } else if (!success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(noteController.errorMessage.value),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Note Details'),
-        elevation: 0,
+        title: const Text('Note Detail'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              context.pushNamed('edit-note', extra: widget.note);
-            },
+            onPressed: _handleEditNote,
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Edit Note',
           ),
           IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Note'),
-                  content: const Text(
-                    'Are you sure you want to delete this note?',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                        final success =
-                            await noteController.deleteNote(widget.note.id);
-                        if (success && mounted) {
-                          context.pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Note deleted'),
-                              backgroundColor: AppColors.success,
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text(
-                        'Delete',
-                        style: TextStyle(color: AppColors.error),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+            onPressed: _handleDeleteNote,
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Delete Note',
           ),
         ],
       ),
@@ -98,7 +95,9 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
 
               // Date
               Text(
-                DateFormat('MMMM d, yyyy - hh:mm a').format(widget.note.createdAt),
+                DateFormat(
+                  'MMMM d, yyyy - hh:mm a',
+                ).format(widget.note.createdAt),
                 style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,
@@ -107,10 +106,7 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
               const SizedBox(height: AppSpacing.lg),
 
               // Divider
-              Container(
-                height: 1,
-                color: AppColors.divider,
-              ),
+              Container(height: 1, color: AppColors.divider),
               const SizedBox(height: AppSpacing.lg),
 
               // Description

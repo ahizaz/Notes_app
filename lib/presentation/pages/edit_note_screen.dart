@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../controllers/note_controller.dart';
 import '../../data/models/note_model.dart';
 import '../../utils/app_theme.dart';
+import '../widgets/app_loading_button.dart';
+import '../widgets/app_text_form_field.dart';
 
 class EditNoteScreen extends StatefulWidget {
   final NoteModel note;
@@ -79,9 +81,10 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
               children: [
                 const SizedBox(height: AppSpacing.md),
 
-                // Title Field
-                TextFormField(
+                AppTextFormField(
                   controller: _titleController,
+                  hintText: 'Note Title',
+                  prefixIcon: const Icon(Icons.title),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Title is required';
@@ -89,11 +92,10 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                     return null;
                   },
                   maxLines: null,
-                  decoration: InputDecoration(
-                    hintText: 'Note Title',
-                    prefixIcon: const Icon(Icons.title),
-                    fillColor: AppColors.surface,
-                  ),
+                  fillColor: AppColors.surface,
+                  borderRadius: AppBorderRadius.md,
+                  borderColor: AppColors.divider,
+                  enabledBorderColor: AppColors.divider,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -101,9 +103,13 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
 
-                // Description Field
-                TextFormField(
+                AppTextFormField(
                   controller: _descriptionController,
+                  hintText: 'Note Description',
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(top: AppSpacing.md),
+                    child: Icon(Icons.description),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Description is required';
@@ -112,48 +118,24 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                   },
                   maxLines: 10,
                   minLines: 5,
-                  decoration: InputDecoration(
-                    hintText: 'Note Description',
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.only(top: AppSpacing.md),
-                      child: Icon(Icons.description),
-                    ),
-                    alignLabelWithHint: true,
-                    fillColor: AppColors.surface,
-                  ),
+                  alignLabelWithHint: true,
+                  fillColor: AppColors.surface,
+                  borderRadius: AppBorderRadius.md,
+                  borderColor: AppColors.divider,
+                  enabledBorderColor: AppColors.divider,
                   style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: AppSpacing.lg),
 
                 // Update Button
                 Obx(
-                  () => ElevatedButton(
+                  () => AppLoadingButton(
+                    label: 'Update Note',
+                    isLoading: noteController.isLoading.value,
                     onPressed: noteController.isLoading.value
                         ? null
                         : _handleUpdateNote,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    ),
-                    child: noteController.isLoading.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : const Text(
-                            'Update Note',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    backgroundColor: AppColors.primary,
                   ),
                 ),
               ],
