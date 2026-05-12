@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/user_model.dart';
-
+//used sharedpreference
 class LocalStorageService {
   static const String _userKey = 'current_user';
   static const String _splashShownKey = 'splash_shown';
