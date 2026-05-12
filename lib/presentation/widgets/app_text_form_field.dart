@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/app_theme.dart';
 
-class AppTextFormField extends StatelessWidget {
+class AppTextFormField extends StatefulWidget {
   const AppTextFormField({
     super.key,
     required this.controller,
@@ -44,44 +44,72 @@ class AppTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? prefixIconPadding;
 
   @override
+  State<AppTextFormField> createState() => _AppTextFormFieldState();
+}
+
+class _AppTextFormFieldState extends State<AppTextFormField> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final icon = prefixIconPadding == null
-        ? prefixIcon
-        : Padding(
-            padding: prefixIconPadding!,
-            child: prefixIcon,
-          );
+    final icon = widget.prefixIconPadding == null
+        ? widget.prefixIcon
+        : Padding(padding: widget.prefixIconPadding!, child: widget.prefixIcon);
+
+    final suffixIcon = widget.obscureText
+        ? IconButton(
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+            icon: Icon(
+              _obscureText
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
+            ),
+          )
+        : null;
 
     return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: validator,
-      maxLines: maxLines,
-      minLines: minLines,
-      style: style,
+      controller: widget.controller,
+      keyboardType: widget.keyboardType,
+      obscureText: _obscureText,
+      validator: widget.validator,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
+      style: widget.style,
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: widget.hintText,
         prefixIcon: icon,
+        suffixIcon: suffixIcon,
         filled: true,
-        fillColor: fillColor ?? Theme.of(context).inputDecorationTheme.fillColor,
-        alignLabelWithHint: alignLabelWithHint,
-        contentPadding: contentPadding,
+        fillColor:
+            widget.fillColor ??
+            Theme.of(context).inputDecorationTheme.fillColor,
+        alignLabelWithHint: widget.alignLabelWithHint,
+        contentPadding: widget.contentPadding,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: BorderSide(color: borderColor),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderSide: BorderSide(color: widget.borderColor),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: BorderSide(color: enabledBorderColor),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderSide: BorderSide(color: widget.enabledBorderColor),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: BorderSide(color: focusedBorderColor, width: 2),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderSide: BorderSide(color: widget.focusedBorderColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: BorderSide(color: errorBorderColor),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderSide: BorderSide(color: widget.errorBorderColor),
         ),
       ),
     );
